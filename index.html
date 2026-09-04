@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerhard Breukers — Web apps that ship</title>
+<meta name="description" content="Auckland-based developer. Flask, Python and plain JavaScript. Case studies of apps that run in production, not just on a laptop.">
+
+<!-- Open Graph: this link gets pasted into WhatsApp, LinkedIn and email.
+     media/og.png is 1200x630. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gerhard Breukers — Web apps that ship">
+<meta property="og:description" content="Case studies of apps that run in production. Flask, Python, plain JavaScript.">
+<meta property="og:url" content="https://sonofadutch.github.io/">
+<meta property="og:image" content="https://sonofadutch.github.io/media/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/">Gerhard Breukers<span>.</span></a>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+      <a class="cta" href="mailto:gerardbreukers@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <p class="eyebrow">Auckland, New Zealand — Dutch</p>
+  <h1>I build web apps and <em>put them in front of people</em>.</h1>
+  <p class="hero-sub">
+    Python and Flask on the back, plain HTML and CSS on the front, deployed to a
+    real server with a real domain. Every project below runs somewhere other than
+    my laptop. Below are the parts worth showing: the problem, the decisions, and
+    the code I would defend in a review.
+  </p>
+  <div class="hero-meta">
+    <div>
+      <span class="k">Status</span>
+      <span class="v"><span class="dot"></span>Open to freelance and full-time</span>
+    </div>
+    <div>
+      <span class="k">Focus</span>
+      <span class="v">Web apps, automation, security</span>
+    </div>
+    <div>
+      <span class="k">Studying</span>
+      <span class="v">CEH · CompTIA Security+ / PenTest+</span>
+    </div>
+    <div>
+      <span class="k">Contact</span>
+      <span class="v"><a href="mailto:gerardbreukers@gmail.com">gerardbreukers@gmail.com</a></span>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <p class="eyebrow count">Case studies, not repo dumps</p>
+    </div>
+
+    <div class="work">
+
+      <a class="card card-wide" href="work/one-more-year-pool.html">
+        <div class="shot" data-placeholder="media/one-more-year.gif">
+          <img src="media/one-more-year.gif" alt="" loading="lazy" onerror="this.remove()">
+        </div>
+        <div class="card-body">
+          <span class="card-idx">01 — Live in production</span>
+          <h3>One More Year</h3>
+          <p>
+            A knockout-tournament prediction pool for a group of friends, running on
+            its own server since the first match. Anonymous entry links, a locking
+            deadline, and a standings table that settles the argument on Monday morning.
+          </p>
+          <div class="tags">
+            <span class="tag">Flask</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">Nginx</span>
+            <span class="tag">systemd</span>
+            <span class="tag">Responsive</span>
+          </div>
+          <div class="card-go">
+            <span>Read the case study</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="work/pentest-plus.html">
+        <div class="shot" data-placeholder="media/pentest-plus.gif">
+          <img src="media/pentest-plus.gif" alt="" loading="lazy" onerror="this.remove()">
+        </div>
+        <div class="card-body">
+          <span class="card-idx">02 — Tool I use daily</span>
+          <h3>PenTest+ Trainer</h3>
+          <p>
+            An exam simulator I built because the ones I could buy did not work the
+            way I study. Installs to the phone home screen, works with no signal, and
+            keeps the clock honest across a pause.
+          </p>
+          <div class="tags">
+            <span class="tag">React</span>
+            <span class="tag">Vite</span>
+            <span class="tag">PWA</span>
+            <span class="tag">Offline-first</span>
+          </div>
+          <div class="card-go">
+            <span>Read the case study</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="card" href="work/sweepstake.html">
+        <div class="shot" data-placeholder="media/sweepstake.gif">
+          <img src="media/sweepstake.gif" alt="" loading="lazy" onerror="this.remove()">
+        </div>
+        <div class="card-body">
+          <span class="card-idx">03 — In progress</span>
+          <h3>Sweepstake</h3>
+          <p>
+            White-label sweepstake software for clubs and workplaces: their name,
+            their colours, their event. The interesting part is not the draw — it is
+            telling the organiser, in plain English, what they have just set up.
+          </p>
+          <div class="tags">
+            <span class="tag">Flask</span>
+            <span class="tag">Multi-tenant</span>
+            <span class="tag">Product design</span>
+          </div>
+          <div class="card-go">
+            <span>Read the case study</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- ADD A PROJECT: copy one card above, point it at a new page made from
+           work/_template.html, and drop a capture into media/. Nothing else. -->
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>How I work</h2>
+    </div>
+    <div class="caps">
+      <div class="cap">
+        <h3>Ship it, then improve it</h3>
+        <p>
+          A thing on a server that five people are using beats a perfect thing on my
+          laptop. Every project here went live before it was finished, and got better
+          because people were using it.
+        </p>
+      </div>
+      <div class="cap">
+        <h3>Small stack on purpose</h3>
+        <p>
+          Flask, SQLite, plain CSS. No build step where one is not needed. It means a
+          client can be handed the whole thing and it will still run in three years.
+        </p>
+      </div>
+      <div class="cap">
+        <h3>Security is not an add-on</h3>
+        <p>
+          I study for the CEH and PenTest+ because I would rather find the broken
+          access check in my own code than have someone else find it. I have, more
+          than once.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>About</h2>
+    </div>
+    <div class="prose">
+      <p class="lede">
+        I came to code sideways, and that turns out to be the useful part.
+      </p>
+      <p>
+        I am Dutch, based in Auckland, and I work in stock control and purchasing —
+        the job that taught me what a broken process actually costs a business.
+        Before that I spent a year as an AI trainer, which is where I learned to read
+        a system carefully enough to explain why it is wrong.
+      </p>
+      <p>
+        Now I build the software. Mostly small web apps for a specific group of people
+        with a specific problem: a pool for a group of friends, a study tool for an
+        exam I am sitting, a sweepstake product for clubs that currently run theirs on
+        a spreadsheet. I am studying the CEH and working toward CompTIA Security+ and
+        PenTest+, aiming at automation work where security and AI meet.
+      </p>
+      <p>
+        <strong>What that means if you are hiring or looking for someone to build
+        something:</strong> I finish, I deploy, and I will tell you plainly what a
+        thing costs and what it cannot do.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Contact</p>
+    <p class="contact-line" style="margin:16px 0 0">
+      Got something to build?<br>
+      <a href="mailto:gerardbreukers@gmail.com">gerardbreukers@gmail.com</a>
+    </p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>&copy; 2026 Gerhard Breukers</span>
+    <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+    <!-- TODO: paste your LinkedIn URL here, or delete this line. -->
+    <a href="https://www.linkedin.com/in/" rel="noopener">LinkedIn</a>
+    <span class="right">Built by hand. No framework, no build step.</span>
+  </div>
+</footer>
+
+</body>
+</html>

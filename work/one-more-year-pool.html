@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One More Year — Gerhard Breukers</title>
+<meta name="description" content="A knockout-tournament prediction pool built with Flask and SQLite, running in production on its own server. Case study.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">Gerhard Breukers<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a class="cta" href="mailto:gerardbreukers@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap case-head">
+  <a class="back" href="../index.html#work">&larr; All work</a>
+  <p class="eyebrow">Case study 01 — Live in production</p>
+  <h1>One More Year</h1>
+  <p class="lede">
+    A prediction pool for a knockout tournament, built for people who would never
+    make an account to use it.
+  </p>
+
+  <div class="facts">
+    <div>
+      <span class="k">Role</span>
+      <span class="v">Everything — design, build, deploy, support</span>
+    </div>
+    <div>
+      <span class="k">Stack</span>
+      <span class="v">Python, Flask, SQLite, Nginx, systemd</span>
+    </div>
+    <div>
+      <span class="k">Status</span>
+      <span class="v">Live, used by a real group</span>
+    </div>
+    <div>
+      <span class="k">Source</span>
+      <span class="v">Private &middot; available on request</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <figure>
+    <!-- Replace with media/one-more-year.gif once recorded. See media/README.md. -->
+    <div class="shot" data-placeholder="media/one-more-year.gif" style="border-radius:10px;border:1px solid var(--line)">
+      <img src="../media/one-more-year.gif" alt="The pool's entry screen, filling in picks on a phone" loading="lazy" onerror="this.remove()">
+    </div>
+    <figcaption>Entering picks. The whole flow is three taps and a name.</figcaption>
+  </figure>
+
+  <div class="prose">
+
+    <h2>The problem</h2>
+    <p>
+      Every tournament, someone in the group runs the pool on a spreadsheet. It works
+      until it doesn't: two people send picks after kick-off, one sheet gets edited
+      by the wrong person, and nobody can prove what the standings were on Sunday
+      night. The argument is the tradition; the admin is not.
+    </p>
+    <p>
+      I wanted the version where you tap a link in the group chat, pick your teams,
+      and never think about it again.
+    </p>
+
+    <h2>Constraints I set myself</h2>
+    <ul>
+      <li><strong>No sign-up.</strong> Every account screen loses half the group. If it needs a password, it will not get used.</li>
+      <li><strong>One deadline, enforced by the server.</strong> Not a message asking people to be honest.</li>
+      <li><strong>It has to be good on a phone</strong>, because that is the only place anyone will open it.</li>
+      <li><strong>Cheap and boring to run.</strong> One small VPS, one process, one file of a database.</li>
+    </ul>
+
+    <h2>What I built</h2>
+    <p>
+      A Flask app using the application-factory pattern with blueprints split by
+      audience: a public side that takes entries, and an admin side that enters
+      results. Data lives in SQLite, which for a few dozen entries and a read-heavy
+      standings page is not a compromise — it is the right answer. The whole thing
+      is one process behind Nginx, kept alive by systemd, on a domain pointed at a
+      small VPS.
+    </p>
+
+    <h3>Decision 1 — a link per person instead of an account</h3>
+    <p>
+      Everyone gets their own URL. Open it and you are you; there is nothing to
+      remember and nothing to reset. The cost of that convenience is that the URL
+      <em>is</em> the credential, so it has to be unguessable — a database id in the
+      path would mean anyone could count upward and read, or edit, their neighbour's
+      entry.
+    </p>
+    <pre><code># Every entry link carries an opaque token, never the row id.
+# 16 bytes from secrets is not something you walk up to by hand.
+import secrets
+
+def new_entry_token() -&gt; str:
+    return secrets.token_urlsafe(16)</code></pre>
+    <p class="code-note">Excerpt — app/models.py</p>
+
+    <h3>Decision 2 — the deadline lives in config, not in the code</h3>
+    <p>
+      Kick-off moves. A deadline hard-coded in a template means a redeploy at the
+      worst possible moment, so it sits in the environment and the server is
+      restarted. Every write path checks it, not just the one that renders the
+      button — hiding a form is a courtesy, refusing the POST is the rule.
+    </p>
+
+    <h3>Decision 3 — static assets that actually update</h3>
+    <p>
+      I shipped a redesign and it did not appear. Nginx was serving the stylesheet
+      with a seven-day expiry and the filename had not changed, so returning visitors
+      kept the old one — the people who use the app most were the last to see the fix.
+      The answer is to make the URL change whenever the file does:
+    </p>
+    <pre><code>@app.url_defaults
+def stamp_static(endpoint, values):
+    """Append the file's mtime to every static URL, so a changed file
+    is a changed URL and the browser cache stops being a liability."""
+    if endpoint != "static" or "filename" not in values:
+        return
+    path = os.path.join(app.static_folder, values["filename"])
+    try:
+        values["v"] = int(os.stat(path).st_mtime)
+    except OSError:
+        pass</code></pre>
+    <p class="code-note">Excerpt — app/__init__.py</p>
+    <p>
+      Nine lines, no build tool, no asset pipeline. <code>url_for('static', …)</code>
+      keeps being called exactly the way it already was everywhere in the templates.
+    </p>
+
+    <h2>The phone problem</h2>
+    <p>
+      The first version looked fine on my monitor and fell apart on a phone. The
+      culprit was not "responsiveness" in general — it was one nested grid: a round
+      of sixteen laid out as columns, each column holding its own grid of team
+      buttons. At 390 pixels wide that is a grid inside a grid inside a 12-pixel
+      gutter, and team names were being hyphenated down to two characters.
+    </p>
+    <p>
+      I fixed it by collapsing the outer grid to a single column below 560px and
+      letting the inner one keep two, then setting every tappable thing to a 44px
+      minimum. I also managed to break the desktop layout while fixing the phone —
+      I had narrowed a shared <code>minmax()</code> and clipped the later rounds at
+      1280px — which is why I now sweep a set of widths before I call a layout done,
+      rather than checking the one I was looking at.
+    </p>
+
+    <h2>What I would do differently</h2>
+    <ul>
+      <li>
+        <strong>Authorisation first, not after.</strong> The first cut identified
+        entries by their row id and trusted whoever held the link. That is a broken
+        access control, and I found it by auditing my own app the way I have been
+        taught to audit someone else's. Unguessable tokens and a check on every
+        write path is the pattern I now start with.
+      </li>
+      <li>
+        <strong>Cache strategy is part of deployment.</strong> A long expiry header
+        and unversioned filenames is a decision, even when nobody decides it.
+      </li>
+      <li>
+        <strong>Test at three widths, not one.</strong> Cheap, and it would have
+        caught the regression above before it shipped.
+      </li>
+    </ul>
+
+    <h2>Where it got to</h2>
+    <p>
+      It ran the whole tournament. Nobody asked me how to use it, nobody sent me
+      picks by text, and the standings were never in dispute — which for a tool like
+      this is the entire success criterion. It is also the project that turned into a
+      product: <a href="sweepstake.html">Sweepstake</a> is the same idea rebuilt so
+      that any club can run its own.
+    </p>
+  </div>
+
+  <a class="next" href="pentest-plus.html">
+    <div>
+      <p class="eyebrow">Next case study</p>
+      <h3>PenTest+ Trainer</h3>
+    </div>
+    <span class="arrow">&rarr;</span>
+  </a>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>&copy; 2026 Gerhard Breukers</span>
+    <a href="../index.html">Home</a>
+    <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+    <span class="right">gerardbreukers@gmail.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

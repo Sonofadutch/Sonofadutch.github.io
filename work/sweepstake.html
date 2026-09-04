@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sweepstake — Gerhard Breukers</title>
+<meta name="description" content="White-label sweepstake software for clubs and workplaces. Multi-tenant Flask app. Case study of work in progress.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">Gerhard Breukers<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a class="cta" href="mailto:gerardbreukers@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap case-head">
+  <a class="back" href="../index.html#work">&larr; All work</a>
+  <p class="eyebrow">Case study 03 — In progress</p>
+  <h1>Sweepstake</h1>
+  <p class="lede">
+    Turning one group's pool into software any club can run under its own name.
+  </p>
+
+  <div class="facts">
+    <div>
+      <span class="k">Role</span>
+      <span class="v">Product, architecture, build</span>
+    </div>
+    <div>
+      <span class="k">Stack</span>
+      <span class="v">Python, Flask, SQLite, server-rendered</span>
+    </div>
+    <div>
+      <span class="k">Status</span>
+      <span class="v">In build — pilot planned</span>
+    </div>
+    <div>
+      <span class="k">Source</span>
+      <span class="v">Private &middot; available on request</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <figure>
+    <div class="shot" data-placeholder="media/sweepstake.gif" style="border-radius:10px;border:1px solid var(--line)">
+      <img src="../media/sweepstake.gif" alt="The organiser setting up a pool and reading the plain-English summary" loading="lazy" onerror="this.remove()">
+    </div>
+    <figcaption>Setting up a pool. One page, then a summary that says what you have just made.</figcaption>
+  </figure>
+
+  <div class="prose">
+
+    <h2>The idea</h2>
+    <p>
+      Rugby clubs, tennis clubs and offices all run a sweepstake for the one big
+      event of their year, and almost all of them run it on a printed sheet or a
+      group chat. <a href="one-more-year-pool.html">One More Year</a> proved the
+      shape works for one group. This is the version a club buys once, brands with
+      its own name and colours, and runs itself.
+    </p>
+    <p class="lede">
+      The hard part was never the draw. It was making an organiser confident about
+      what they had just set up.
+    </p>
+
+    <h2>The interesting problem</h2>
+    <p>
+      A sweepstake is four decisions — what people pay, what the organisation keeps,
+      what the prizes are, and where the prizes come from — and those four decisions
+      combine into very different things. Free to enter with a trophy at the end is a
+      raffle at a school fair. Everyone pays in and the winner takes the pot is
+      something else entirely, with rules attached.
+    </p>
+    <p>
+      A club treasurer should not have to work that out from a form. So the app works
+      it out, and after setup it says so in one sentence, in plain English, before
+      anything is opened to members:
+    </p>
+    <pre><code>def classify(entry_amount_cents, prizes):
+    """Two axes decide what a pool actually is: is there a stake,
+    and is any prize worth money. Everything else is detail."""
+    stake = entry_amount_cents &gt; 0
+    valuable = any(p["kind"] in VALUABLE_KINDS for p in prizes)
+
+    if stake and valuable:      return STAKE_AND_PRIZE
+    if stake and not valuable:  return STAKE_NO_PRIZE
+    if valuable:                return FREE_WITH_PRIZE
+    return JUST_A_GAME</code></pre>
+    <p class="code-note">Excerpt — app/shape.py</p>
+    <p>
+      That verdict sits at the top of the review page with the money broken down line
+      by line: what comes in, what the named organisation keeps, what each place
+      pays. An organiser who can see it is an organiser who will not get it wrong.
+      There is a guardrail in the schema too — a pool can name an organisation as the
+      beneficiary of its share, and cannot pay that share to a person.
+    </p>
+
+    <h3>Decision — deal the draw like a pack of cards</h3>
+    <p>
+      With twenty members and eight players in the field, everyone must get someone
+      and the extras must be spread evenly. Picking at random per person gets you
+      duplicates and a lonely eighth player. Shuffling once and dealing round-robin
+      gets you <code>[3,3,3,3,2,2,2,2]</code> every time, and it is also the version
+      you can explain to a room:
+    </p>
+    <pre><code>options = shuffled(options)          # the field, once
+people  = shuffled(paid_participants)  # unpaid are not in the draw
+
+for i, person in enumerate(people):
+    allocate(person, options[i % len(options)])</code></pre>
+    <p class="code-note">The shape of it — app/db.py</p>
+
+    <h3>Decision — multi-tenant from the first table</h3>
+    <p>
+      Every row hangs off an <code>org_id</code>, and every query is scoped by it.
+      Retrofitting tenancy onto a single-tenant schema is a rewrite; putting it in on
+      day one costs one column. The organisation's colour is a single custom property
+      on <code>&lt;body&gt;</code>, so a tenant's brand flows through the entire
+      stylesheet without a build step or a second theme file.
+    </p>
+    <p>
+      Members never sign in. They open a link, type a name, and that is the whole
+      flow — the same lesson as the last project, applied on purpose this time, with
+      unguessable tokens rather than row ids from the start.
+    </p>
+
+    <h2>Where it is now</h2>
+    <p>
+      Schema, draw, organiser setup and the join flow are built. Still to come: the
+      member view, results and standings, and a printable QR poster an organiser can
+      pin to the clubroom wall. The pilot is a darts tournament at the end of the
+      year, with a written enquiry to the regulator going in first — I would rather
+      ask before I build the pricing than after.
+    </p>
+
+    <h2>What this one is teaching me</h2>
+    <ul>
+      <li>
+        <strong>The product is the constraint, not the feature list.</strong> Cutting
+        to one draw shape and one event took the build from months to weeks.
+      </li>
+      <li>
+        <strong>Say what the software just did.</strong> The summary screen is the
+        thing a buyer would actually pay for.
+      </li>
+      <li>
+        <strong>Ask the boring questions early.</strong> Rules you find out about
+        after launch are the expensive kind.
+      </li>
+    </ul>
+  </div>
+
+  <a class="next" href="one-more-year-pool.html">
+    <div>
+      <p class="eyebrow">Back to the start</p>
+      <h3>One More Year</h3>
+    </div>
+    <span class="arrow">&rarr;</span>
+  </a>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>&copy; 2026 Gerhard Breukers</span>
+    <a href="../index.html">Home</a>
+    <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+    <span class="right">gerardbreukers@gmail.com</span>
+  </div>
+</footer>
+
+</body>
+</html>
