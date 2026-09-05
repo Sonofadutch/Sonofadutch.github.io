@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aplus Factuur — Gerhard Breukers</title>
+<meta name="description" content="A phone-first invoicing app for a Dutch subcontractor: fill in hours, get a PDF, send it on WhatsApp. No accounts, no backend, no app store.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">Gerhard Breukers<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a class="cta" href="mailto:gerardbreukers@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap case-head">
+  <a class="back" href="../index.html#work">&larr; All work</a>
+  <p class="eyebrow">Case study 02 — Live, used every week</p>
+  <h1>Aplus Factuur</h1>
+  <p class="lede">
+    An invoicing app for one man with one job to do: type this week's hours, and send
+    the invoice on WhatsApp before he puts the phone back in his pocket.
+  </p>
+
+  <div class="facts">
+    <div><span class="k">Role</span><span class="v">Sole developer</span></div>
+    <div><span class="k">Stack</span><span class="v">Vanilla JS &middot; PWA &middot; jsPDF &middot; Nginx</span></div>
+    <div><span class="k">Status</span><span class="v">Live on a VPS, in weekly use</span></div>
+    <div><span class="k">Source</span><span class="v">Private &middot; available on request</span></div>
+  </div>
+
+  <a class="live-link" href="https://invoicedemo.duckdns.org" rel="noopener" target="_blank">
+    Open the demo <span>&#8599;</span>
+  </a>
+  <p class="live-note">
+    An anonymised build of the same app — invented client, invented bank details,
+    English instead of Dutch. Add a client, change your own details, send yourself
+    an invoice. Nothing leaves your browser.
+  </p>
+</header>
+
+<main class="wrap">
+  <figure>
+    <div class="shot" data-placeholder="media/aplus-factuur.png" style="border-radius:10px;border:1px solid var(--line)">
+      <img src="../media/aplus-factuur.png" alt="Entering hours for a week and sharing the generated PDF invoice" loading="lazy" onerror="this.remove()">
+    </div>
+    <figcaption>Pick the week, type the hours, share the PDF. That is the whole app.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>The problem</h2>
+    <p>
+      Erik subcontracts to a Dutch painting firm. Every week he owes them an invoice:
+      hours times a fixed rate, sometimes a line of extras, plus 21% btw. He was doing
+      it by hand — which is fine right up until the week you are tired, and you bill
+      the wrong hours, or forget entirely, and get paid late for work you already did.
+    </p>
+    <p>
+      The failure was never the arithmetic. It was the friction: the invoice lived on a
+      computer, and the hours lived in his head at the end of a day on site.
+    </p>
+
+    <h2>Constraints I set myself</h2>
+    <ul>
+      <li><strong>Phone first, and only.</strong> If it needs a laptop it will not get used.</li>
+      <li><strong>No accounts, no login.</strong> One user. A password is a thing that can go wrong for no benefit.</li>
+      <li><strong>No backend, no database.</strong> Nothing to maintain, nothing to breach, nothing to pay for.</li>
+      <li><strong>Dutch, in his words.</strong> The button says <em>Versturen via WhatsApp</em>, because that is what he is doing.</li>
+      <li><strong>Not in an app store.</strong> Review queues and a developer account to serve one person is absurd. A PWA installs from a link.</li>
+    </ul>
+
+    <h2>What I built</h2>
+    <p>
+      A static page that installs to his home screen and works offline. It opens on the
+      week that still needs invoicing, with arrows to move between weeks. He types hours;
+      the totals, the btw line and the invoice number fill themselves in. The PDF is built
+      on the device with jsPDF and handed straight to the share sheet, so the invoice goes
+      out through WhatsApp as a real attachment. Weeks already sent are marked
+      <em>Al verzonden</em> and keep their own invoice, so nothing gets billed twice.
+      State lives in <code>localStorage</code>. There is no server-side anything — nginx
+      serves five files.
+    </p>
+
+    <h3>Decision 1 — money is integers, never floats</h3>
+    <p>
+      The obvious version multiplies hours by the rate and adds 21%. The obvious version is
+      also how you end up with an invoice that says &euro;1.234,56 when the line items add up
+      to &euro;1.234,55 — and an invoice that does not add up is worse than no app at all.
+      Every amount is converted to whole cents, added there, and only converted back for
+      display.
+    </p>
+    <pre><code>function cents(n) {
+  return Math.round((Number(n) + Number.EPSILON) * 100);
+}
+
+function calc(data) {
+  const labor = fromCents(cents(data.hours * HOURLY_RATE));
+  const extra = fromCents(cents(data.extra));
+  const exclCents = cents(labor) + cents(extra);
+  const btwCents = Math.round((exclCents * BTW_RATE) / 100);
+  return { labor, extra, excl: fromCents(exclCents),
+           btw: fromCents(btwCents), total: fromCents(exclCents + btwCents) };
+}</code></pre>
+    <p class="code-note">Excerpt — app.js</p>
+    <p>
+      The <code>Number.EPSILON</code> nudge is there because floating-point money rounds
+      the wrong way often enough to matter. Rounding currency is not something you get
+      correct for free.
+    </p>
+
+    <h3>Decision 2 — share the file, but never trust that sharing works</h3>
+    <p>
+      The nice path is the Web Share API: hand the browser a <code>File</code> and let the OS
+      show the share sheet with WhatsApp in it. The catch is that support is uneven — some
+      browsers expose <code>navigator.share</code> but refuse files, and a user who cancels the
+      sheet throws an <code>AbortError</code> that must not be treated as a failure. So the app
+      asks first, and keeps a fallback that always works: download the PDF, then open WhatsApp
+      with the message pre-filled so he attaches it himself.
+    </p>
+    <pre><code>async function shareOrDownload(blob, data) {
+  const file = new File([blob], filenameFor(data.invoiceNumber, data),
+                        { type: "application/pdf" });
+  if (navigator.share) {
+    try {
+      const payload = { files: [file], title: file.name };
+      if (!navigator.canShare || navigator.canShare(payload)) {
+        await navigator.share(payload);
+        return "shared";
+      }
+    } catch (error) {
+      if (error &amp;&amp; error.name === "AbortError") return "cancelled";
+    }
+  }
+  downloadBlob(blob, file.name);
+  openWhatsApp(data);
+  return "whatsapp";
+}</code></pre>
+    <p class="code-note">Excerpt — app.js</p>
+    <p>
+      Three outcomes, three different things to tell the user. Collapsing them into
+      "sent!" would mean the app cheerfully lies on the one week the share sheet was
+      cancelled by accident.
+    </p>
+
+    <h3>Decision 3 — HTTPS was not optional, and that shaped the deploy</h3>
+    <p>
+      A PWA will not offer to install over plain HTTP. No certificate, no
+      <em>Zet op telefoon</em>, no home screen icon — and without the icon the app is just
+      a link he has to go and find, which is the friction I set out to remove. That single
+      requirement is why this runs on a VPS with a real domain and a Let's Encrypt
+      certificate instead of being a file he opens locally.
+    </p>
+    <pre><code>certbot --nginx -d &lt;the app's hostname&gt; \
+        --non-interactive --agree-tos --redirect \
+        -m gerardbreukers@gmail.com</code></pre>
+    <p class="code-note">Excerpt — one-time setup, deploy notes</p>
+
+    <!-- TODO Gerhard: replace this section with the bug you actually remember hitting
+         on Erik's phone. I wrote only what the code itself proves. The most convincing
+         paragraph on this page is the one where you name the thing that broke. -->
+    <h2>What went wrong</h2>
+    <p>
+      The parts of this app that look over-engineered are all scar tissue. Integer cents,
+      the <code>canShare</code> guard, the <code>AbortError</code> branch, the certificate — none
+      of that was in the first version. Each one is there because the simple version worked
+      on my machine and then did something else on a real phone belonging to someone who
+      was never going to debug it for me.
+    </p>
+
+    <h2>What I would do differently</h2>
+    <ul>
+      <li><strong>Back up the state.</strong> Everything lives in <code>localStorage</code>. Clearing site data wipes his invoice history, and he has no idea that is a thing that can happen. An export button is the cheapest possible insurance.</li>
+      <li><strong>Make the rate and the VAT percentage editable.</strong> They are constants at the top of the file. That was right for one client and one rate; it stops being right the day either changes.</li>
+      <li><strong>Think harder about invoice numbering.</strong> It derives from the week, which is fine until a week needs two invoices.</li>
+    </ul>
+
+    <h2>The demo, and what building it taught me</h2>
+    <p>
+      The production app cannot be linked from here: it carries a real business's
+      address, Chamber of Commerce number and IBAN, and it is a working tool rather than
+      an exhibit. So there is a second build — same code, invented identity, English
+      instead of Dutch — and making it forced me to fix the two things listed above.
+    </p>
+    <p>
+      Generalising from one client to many turned out to be the interesting part. The
+      hourly rate stops being a constant and becomes a property of the client. The VAT
+      percentage moves into editable settings. And every archived invoice has to carry
+      its own copy of the rate, the VAT and the client's address — because editing a
+      client's rate today must not silently rewrite what you charged them last month.
+    </p>
+    <pre><code>// Rate and VAT ride along with the invoice rather than being globals, so an
+// archived invoice keeps the numbers it was actually issued with even after
+// the client's rate is edited.
+const rate = Number.isFinite(Number(data.rate)) ? Number(data.rate) : DEFAULT_RATE;
+const vat  = Number.isFinite(Number(data.vatRate)) ? Number(data.vatRate) : 21;</code></pre>
+    <p class="code-note">Excerpt — the demo build's app.js</p>
+    <p>
+      Multi-client also broke an assumption I had not noticed I was making: the app looked
+      up "the invoice for this week" by week alone. With one client that is a unique key.
+      With several it is not — two clients can both be invoiced for week 36 — so the lookup
+      had to be scoped by client as well. That is the sort of bug that only appears when
+      you widen the problem, which is a decent argument for widening it.
+    </p>
+  </div>
+
+  <a class="next" href="concrete-online.html">
+    <div>
+      <p class="eyebrow">Next case study</p>
+      <h3>Concrete Online</h3>
+    </div>
+    <span class="arrow">&rarr;</span>
+  </a>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>&copy; 2026 Gerhard Breukers</span>
+    <a href="../index.html">Home</a>
+    <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+    <span class="right">gerardbreukers@gmail.com</span>
+  </div>
+</footer>
+
+</body>
+</html>

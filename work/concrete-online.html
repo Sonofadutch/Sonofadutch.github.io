@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concrete Online — Gerhard Breukers</title>
+<meta name="description" content="A NZ ready-mix concrete ordering platform where the price is published, every fee is itemised, and the quote is the order. Next.js, React and TypeScript.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../css/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="../index.html">Gerhard Breukers<span>.</span></a>
+    <div class="nav-links">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a class="cta" href="mailto:gerardbreukers@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap case-head">
+  <a class="back" href="../index.html#work">&larr; All work</a>
+  <p class="eyebrow">Case study 03 — In build</p>
+  <h1>Concrete Online</h1>
+  <p class="lede">
+    A New Zealand ready-mix concrete supplier where you can finish the order online:
+    real price on the spot, every fee itemised, delivery slot confirmed. No phone call
+    to find out what it costs.
+  </p>
+
+  <div class="facts">
+    <div><span class="k">Role</span><span class="v">Product and build — research, pricing model, front end</span></div>
+    <div><span class="k">Stack</span><span class="v">Next.js 15 &middot; React 19 &middot; TypeScript &middot; Tailwind</span></div>
+    <div><span class="k">Status</span><span class="v">Four demos shipped, platform in build</span></div>
+    <div><span class="k">Source</span><span class="v">Client work &middot; private</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <figure>
+    <div class="shot" data-placeholder="media/concrete-online.gif" style="border-radius:10px;border:1px solid var(--line)">
+      <img src="../media/concrete-online.gif" alt="Choosing a mix and volume and watching the itemised price update" loading="lazy" onerror="this.remove()">
+    </div>
+    <figcaption>Mix, volume, postcode, date — and a total with every line of it shown.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h2>The problem</h2>
+    <p>
+      Every large NZ concrete supplier advertises "order online". None of them let you
+      finish. You get a volume calculator, maybe an indicative number, and then a form
+      that ends in someone ringing you back. The extras that actually move the price —
+      colour, additives, slump, a Saturday pour, a site out past the usual radius — carry
+      no visible price at all, and the delivery date is not confirmed until a human calls.
+    </p>
+    <p>
+      For a builder pricing a job on a Sunday night, that is a dead end. The competitive
+      gap is not "show prices" — one competitor now does. It is that
+      <strong>nobody lets a customer complete a real, fully priced, confirmed order</strong>.
+    </p>
+    <p>
+      Worth being precise about what is <em>not</em> being promised: ringing a customer about
+      site access or a mix question is normal and often the right thing to do. The promise is
+      narrower and harder — you never have to ring us to find out what it costs.
+    </p>
+
+    <h2>Constraints I set myself</h2>
+    <ul>
+      <li><strong>The quote is the order.</strong> If a number is shown, it is the number that gets charged. No "indicative", no "from".</li>
+      <li><strong>Every fee itemised.</strong> Delivery, small-load, split-load, out-of-area, weekend, deposit. A surprise line on the invoice destroys the whole proposition.</li>
+      <li><strong>Two audiences, one interface.</strong> A builder knows they want 25 MPa. A homeowner doing a driveway has no idea what MPa means and is the one a phone call intimidates.</li>
+      <li><strong>Machine-readable on purpose.</strong> Buyers increasingly ask an AI who delivers concrete next-day with online pricing. To be the answer, the prices have to be in plain text, marked up with schema.org.</li>
+    </ul>
+
+    <h2>What I built</h2>
+    <p>
+      Four self-contained HTML demos first, to put real directions in front of the client
+      rather than describing them — deliberately throwaway, so no one got attached to code
+      that existed to settle an argument. Once a direction was picked, the real platform
+      went into Next.js: server-rendered for search and for AI crawlers, room to grow into
+      payments, accounts and an admin side.
+    </p>
+    <p>
+      The centre of it is a quote engine: a pure function that takes a selection and returns
+      a fully broken-down price, plus an admin surface for the rates behind it.
+    </p>
+
+    <h3>Decision 1 — one authoritative quote function, run on the server</h3>
+    <p>
+      The tempting shortcut is to compute the price in the browser as the customer clicks,
+      then post the total. That hands the price to the client — anyone can edit it, and worse,
+      the browser's number and the server's number drift apart the moment one of them changes.
+      Instead there is a single <code>computeQuote</code> that the UI calls for the live preview
+      and the server calls again, authoritatively, at booking time. Same code, same answer.
+    </p>
+    <pre><code>/** Authoritative quote. Call this on the server at booking time. */
+export function computeQuote(s: Selection): Quote {
+  const est = estimateDistance(s.pc);
+  let perM3 = baseRate(s);
+  (s.addonList || []).forEach((id) => {
+    const a = ADDONS.find((x) => x.id === id);
+    if (a &amp;&amp; a.kind === "perM3") perM3 += a.amount;
+  });
+  const billed   = round2((s.vol || 0) * WASTE);
+  const concrete = perM3 * billed;
+  const delivery = DELIVERY.base + est.km * DELIVERY.perKm;
+  const total = concrete + delivery + flatAddons + smallLoad
+              + splitLoad + outOfArea + slot;
+  const deposit = Math.max(100, Math.round(total * DEPOSIT_PCT));
+  return { perM3, billed, concrete, delivery, /* ... */ total, deposit };
+}</code></pre>
+    <p class="code-note">Excerpt — web/lib/engine.ts</p>
+
+    <h3>Decision 2 — the breakdown is the product, not a disclosure</h3>
+    <p>
+      Note what the return type is. Not a total with the workings thrown away — every
+      component survives: the per-cubic-metre rate, the billed volume after the waste
+      allowance, the concrete subtotal, the distance-based delivery, each surcharge on its
+      own line, and the deposit. That shape is deliberate. The competitor's number is a
+      black box you have to phone about; if this one is going to be trusted instead, the
+      customer has to be able to see exactly where it came from, and the UI can only show
+      that if the engine keeps it.
+    </p>
+    <p>
+      It also makes the fees defensible rather than sneaky. A small-load fee looks like a
+      rip-off when it appears at checkout, and looks entirely reasonable when it is named on
+      the page next to the volume that triggered it.
+    </p>
+
+    <h3>Decision 3 — the waste allowance is applied, and admitted</h3>
+    <p>
+      You never order exactly the volume you calculated; some concrete is lost in the pour.
+      Every supplier bills accordingly. Most bury it. Here the calculator does the maths,
+      applies the allowance, and shows both numbers — what you measured and what you are
+      billed for. The customer who was going to be annoyed about it is going to be far more
+      annoyed discovering it afterwards.
+    </p>
+
+    <h2>Where it stands</h2>
+    <p>
+      Demos are done and have been shown. The pricing engine, the mix helper for people who
+      do not know what they need, and the admin side are built; the ordering flow — payment,
+      confirmed slots, order history — is the current work. Competitor research is written
+      down rather than assumed, and is what killed the original "we show prices" wedge and
+      replaced it with the sharper one.
+    </p>
+
+    <h2>What I would do differently</h2>
+    <ul>
+      <li><strong>Fewer demos, sooner.</strong> Four directions was one or two more than the decision actually needed. The client picked from the first two conversations; the rest was me enjoying myself.</li>
+      <li><strong>Move the rates into the database earlier.</strong> They started as constants in the engine, which is fast to write and wrong the first time a price changes without a deploy.</li>
+      <li><strong>Write the distance estimate against real depot data from day one.</strong> A postcode approximation is fine for a demo and not fine for a number you are contractually committing to.</li>
+    </ul>
+  </div>
+
+  <a class="next" href="pentest-plus.html">
+    <div>
+      <p class="eyebrow">Next case study</p>
+      <h3>PenTest+ Trainer</h3>
+    </div>
+    <span class="arrow">&rarr;</span>
+  </a>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <span>&copy; 2026 Gerhard Breukers</span>
+    <a href="../index.html">Home</a>
+    <a href="https://github.com/Sonofadutch" rel="noopener">GitHub</a>
+    <span class="right">gerardbreukers@gmail.com</span>
+  </div>
+</footer>
+
+</body>
+</html>
