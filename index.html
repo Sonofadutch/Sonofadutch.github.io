@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gerhard Breukers — Web apps that ship</title>
 <meta name="description" content="Auckland-based developer. Flask, Python and plain JavaScript. Case studies of apps that run in production, not just on a laptop.">
-<meta name="theme-color" content="#0b0c0e">
+<meta name="theme-color" content="#07140c">
 
-<!-- Open Graph: this link gets pasted into WhatsApp, LinkedIn and email.
-     media/og.png is 1200x630. -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Gerhard Breukers — Web apps that ship">
 <meta property="og:description" content="Case studies of apps that run in production. Flask, Python, plain JavaScript.">
@@ -19,9 +17,9 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Big+Shoulders+Display:wght@700;800&display=swap">
 <link rel="stylesheet" href="css/site.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b0c0e'/><text y='72' x='50' text-anchor='middle' font-size='62' font-family='Georgia,serif' fill='%23e6b450'>G</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2307140c'/><text y='74' x='50' text-anchor='middle' font-size='68' font-family='Arial Narrow,sans-serif' font-weight='800' fill='%23e8f06a'>G</text></svg>">
 </head>
 <body>
 
@@ -29,7 +27,7 @@
 
 <nav class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="/">Gerhard Breukers<span>.</span></a>
+    <a class="brand" href="/">Gerhard Breukers</a>
     <div class="nav-links">
       <a href="#work">Work</a>
       <a href="#about">About</a>
@@ -39,188 +37,85 @@
   </div>
 </nav>
 
-<header class="hero wrap">
-  <p class="eyebrow">Auckland, New Zealand — Dutch</p>
-  <h1>I build web apps and <em>put them in front of people</em>.</h1>
-  <p class="hero-sub">
-    Python and Flask on the back, plain HTML and CSS on the front, deployed to a
-    real server with a real domain. Three of the four below are running right now
-    with people other than me using them — links on each one. What I have written
-    up is the part worth reading: the problem, the decisions, and the code I would
-    defend in a review.
-  </p>
-  <div class="hero-meta">
-    <div>
-      <span class="k">Status</span>
-      <span class="v"><span class="dot"></span>Open to freelance and full-time</span>
+<section class="cover">
+  <a class="cover-hit" href="work/one-more-year-pool.html">
+    <img src="media/one-more-year.jpg" alt="One More Year World Cup 2026 pool landing page, night pitch and countdown">
+    <div class="cover-scrim"></div>
+    <div class="cover-copy">
+      <p class="kicker">01 · Live in production · Auckland</p>
+      <h1 class="standfirst">A knockout pool for people who would never make an account.</h1>
+      <span class="cover-go">Read the case study</span>
     </div>
-    <div>
-      <span class="k">Focus</span>
-      <span class="v">Web apps, automation, security</span>
-    </div>
-    <div>
-      <span class="k">Studying</span>
-      <span class="v">CEH · CompTIA Security+ / PenTest+</span>
-    </div>
-    <div>
-      <span class="k">Contact</span>
-      <span class="v"><a href="mailto:gerardbreukers@gmail.com">gerardbreukers@gmail.com</a></span>
-    </div>
-  </div>
-</header>
+  </a>
+</section>
 
-<section class="section" id="work">
+<section class="mast">
   <div class="wrap">
-    <div class="section-head">
-      <h2>Selected work</h2>
-      <p class="eyebrow count">Case studies, not repo dumps</p>
-    </div>
-
-    <div class="work">
-
-      <a class="card card-wide" href="work/one-more-year-pool.html">
-        <div class="shot" data-placeholder="media/one-more-year.jpg">
-          <img src="media/one-more-year.jpg" alt="One More Year World Cup 2026 pool landing page with a countdown to entries closing" onerror="this.remove()">
-        </div>
-        <div class="card-body">
-          <span class="card-idx">01 — Live in production</span>
-          <h3>One More Year</h3>
-          <p>
-            A knockout-tournament prediction pool for a group of friends, running on
-            its own server since the first match. Anonymous entry links, a locking
-            deadline, and a standings table that settles the argument on Monday morning.
-          </p>
-          <div class="tags">
-            <span class="tag tag-live">Live</span>
-            <span class="tag">Flask</span>
-            <span class="tag">SQLite</span>
-            <span class="tag">Nginx</span>
-            <span class="tag">systemd</span>
-          </div>
-          <div class="card-go">
-            <span>Read the case study</span>
-            <span>&rarr;</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card" href="work/aplus-factuur.html">
-        <div class="shot" data-placeholder="media/aplus-factuur.png">
-          <img src="media/aplus-factuur.png" alt="Aplus Factuur demo: hours for the week on the left, generated invoice on the right" loading="lazy" onerror="this.remove()">
-        </div>
-        <div class="card-body">
-          <span class="card-idx">02 — Live, used every week</span>
-          <h3>Aplus Factuur</h3>
-          <p>
-            An invoicing app for one subcontractor with one job to do: type this week's
-            hours, and send the invoice on WhatsApp before the phone goes back in his
-            pocket. No accounts, no backend, no app store.
-          </p>
-          <div class="tags">
-            <span class="tag tag-live">Demo</span>
-            <span class="tag">Vanilla JS</span>
-            <span class="tag">PWA</span>
-            <span class="tag">jsPDF</span>
-            <span class="tag">Offline</span>
-            <span class="tag">Nginx</span>
-          </div>
-          <div class="card-go">
-            <span>Read the case study</span>
-            <span>&rarr;</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card" href="work/concrete-online.html">
-        <div class="shot" data-placeholder="media/concrete-online.jpg">
-          <img src="media/concrete-online.jpg" alt="Concrete Online mix configurator with live itemised price" loading="lazy" onerror="this.remove()">
-        </div>
-        <div class="card-body">
-          <span class="card-idx">03 — In build</span>
-          <h3>Concrete Online</h3>
-          <p>
-            Ready-mix concrete you can actually order online: real price on the spot,
-            every fee itemised, delivery slot confirmed. Every NZ competitor stops at a
-            calculator and makes you ring them. That gap is the whole product.
-          </p>
-          <div class="tags">
-            <span class="tag">Next.js</span>
-            <span class="tag">React</span>
-            <span class="tag">TypeScript</span>
-            <span class="tag">Tailwind</span>
-            <span class="tag">Pricing engine</span>
-          </div>
-          <div class="card-go">
-            <span>Read the case study</span>
-            <span>&rarr;</span>
-          </div>
-        </div>
-      </a>
-
-      <a class="card" href="work/pentest-plus.html">
-        <div class="shot" data-placeholder="media/pentest-plus.png">
-          <img src="media/pentest-plus.png" alt="PenTest+ Trainer dashboard with exam readiness and question-bank progress" loading="lazy" onerror="this.remove()">
-        </div>
-        <div class="card-body">
-          <span class="card-idx">04 — Tool I use daily</span>
-          <h3>PenTest+ Trainer</h3>
-          <p>
-            An exam simulator I built because the ones I could buy did not work the
-            way I study. Installs to the phone home screen, works with no signal, and
-            keeps the clock honest across a pause.
-          </p>
-          <div class="tags">
-            <span class="tag tag-live">Live</span>
-            <span class="tag">React</span>
-            <span class="tag">Vite</span>
-            <span class="tag">PWA</span>
-            <span class="tag">Offline-first</span>
-          </div>
-          <div class="card-go">
-            <span>Read the case study</span>
-            <span>&rarr;</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Sweepstake is written up in work/sweepstake.html but kept off the front
-           page for now. To bring it back, copy a card above and point it there. -->
-
-      <!-- ADD A PROJECT: copy one card above, point it at a new page made from
-           work/_template.html, and drop a capture into media/. Nothing else. -->
-
+    <p>I build web apps and put them in front of people.</p>
+    <div class="mast-meta">
+      <span><span class="dot"></span><strong>Open</strong> to freelance and full-time</span>
+      <span>Python · Flask · plain HTML</span>
+      <span>CEH · Security+ · PenTest+</span>
+      <span><a href="mailto:gerardbreukers@gmail.com">gerardbreukers@gmail.com</a></span>
     </div>
   </div>
 </section>
 
+<section id="work" class="plates">
+
+  <a class="plate" href="work/aplus-factuur.html">
+    <div class="plate-shot">
+      <img src="media/aplus-factuur.png" alt="Aplus Factuur demo: hours on the left, generated invoice on the right" loading="lazy">
+    </div>
+    <div class="plate-body">
+      <p class="plate-idx"><span class="live">02 · Live, used every week</span></p>
+      <h2>Aplus Factuur</h2>
+      <p>Type this week’s hours. Send the PDF on WhatsApp. No accounts, no backend, no app store.</p>
+      <span class="plate-go">Read the case study →</span>
+    </div>
+  </a>
+
+  <a class="plate" href="work/pentest-plus.html">
+    <div class="plate-shot">
+      <img src="media/pentest-plus.png" alt="PenTest+ Trainer dashboard with exam readiness and question-bank progress" loading="lazy">
+    </div>
+    <div class="plate-body">
+      <p class="plate-idx"><span class="live">03 · Tool I use daily</span></p>
+      <h2>PenTest+ Trainer</h2>
+      <p>An exam simulator because the ones I could buy did not work the way I study. Offline, on the phone, clock honest across a pause.</p>
+      <span class="plate-go">Read the case study →</span>
+    </div>
+  </a>
+
+  <a class="plate" href="work/concrete-online.html">
+    <div class="plate-shot">
+      <img src="media/concrete-online.jpg" alt="Concrete Online mix configurator with live itemised price" loading="lazy">
+    </div>
+    <div class="plate-body">
+      <p class="plate-idx">04 · In build</p>
+      <h2>Concrete Online</h2>
+      <p>Ready-mix you can actually order online: real price on the spot, every fee itemised. Every NZ competitor stops at a calculator.</p>
+      <span class="plate-go">Read the case study →</span>
+    </div>
+  </a>
+
+</section>
+
 <section class="section">
   <div class="wrap">
-    <div class="section-head">
-      <h2>How I work</h2>
-    </div>
+    <h2>How I work</h2>
     <div class="caps">
       <div class="cap">
         <h3>Ship it, then improve it</h3>
-        <p>
-          A thing on a server that five people are using beats a perfect thing on my
-          laptop. Every project here went live before it was finished, and got better
-          because people were using it.
-        </p>
+        <p>A thing on a server that five people are using beats a perfect thing on my laptop. Every project here went live before it was finished.</p>
       </div>
       <div class="cap">
         <h3>Small stack on purpose</h3>
-        <p>
-          Flask, SQLite, plain CSS. No build step where one is not needed. It means a
-          client can be handed the whole thing and it will still run in three years.
-        </p>
+        <p>Flask, SQLite, plain CSS. No build step where one is not needed. A client can be handed the whole thing and it will still run in three years.</p>
       </div>
       <div class="cap">
         <h3>Security is not an add-on</h3>
-        <p>
-          I study for the CEH and PenTest+ because I would rather find the broken
-          access check in my own code than have someone else find it. I have, more
-          than once.
-        </p>
+        <p>I study for the CEH and PenTest+ because I would rather find the broken access check in my own code than have someone else find it. I have, more than once.</p>
       </div>
     </div>
   </div>
@@ -228,13 +123,9 @@
 
 <section class="section" id="about">
   <div class="wrap">
-    <div class="section-head">
-      <h2>About</h2>
-    </div>
+    <h2>About</h2>
     <div class="prose">
-      <p class="lede">
-        I came to code sideways, and that turns out to be the useful part.
-      </p>
+      <p class="lede">I came to code sideways, and that turns out to be the useful part.</p>
       <p>
         I am Dutch, based in Auckland, and I work in stock control and purchasing —
         the job that taught me what a broken process actually costs a business.
@@ -259,7 +150,6 @@
 
 <section class="section" id="contact">
   <div class="wrap">
-    <p class="eyebrow">Contact</p>
     <p class="contact-line">
       Got something to build?<br>
       <a href="mailto:gerardbreukers@gmail.com">gerardbreukers@gmail.com</a>
