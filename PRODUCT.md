@@ -22,7 +22,7 @@ Each project answers, in order: the problem, the decision, a piece of real code,
 
 ## Operating Context
 
-Static HTML and CSS on GitHub Pages. No build step. Case studies live under `work/`. Four projects on the home page: One More Year (live pool), Aplus Factuur (live invoice demo), Concrete Online (in build), PenTest+ Trainer (live PWA).
+Static HTML and CSS on GitHub Pages. No build step. Case studies live under `work/`. Four projects on the home page: One More Year (live pool), Weekly invoice (live invoice demo), Concrete Online (in build), PenTest+ Trainer (live PWA).
 
 ## Capabilities and Constraints
 
@@ -38,7 +38,7 @@ Name: Gerhard Breukers. Voice: plain, specific, slightly dry. No hype. The work 
 ## Evidence on Hand
 
 - Live apps: coffindodgerspool.duckdns.org, invoicedemo.duckdns.org, pentestplus.duckdns.org
-- Captures in `media/`: one-more-year.jpg, aplus-factuur.png, concrete-online.jpg, pentest-plus.png
+- Captures in `media/`: one-more-year.jpg, weekly-invoice.png, concrete-online.jpg, pentest-plus.png
 - Written case studies in `work/`
 - Do not fabricate testimonials, traffic numbers, or client quotes
 

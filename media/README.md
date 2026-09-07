@@ -6,7 +6,7 @@ the pages:
 | File | Used by | Size |
 |---|---|---|
 | `one-more-year.jpg` | home card + case study | 1280×800, 16:10 |
-| `aplus-factuur.png` | home card + case study | still of the demo |
+| `weekly-invoice.png` | home plate + case study | still of the demo |
 | `concrete-online.jpg` | home card + case study | 1280×800 |
 | `pentest-plus.png` | home card + case study | 1280×800 |
 | `og.png` | link previews (WhatsApp, LinkedIn, email) | 1200×630 |
