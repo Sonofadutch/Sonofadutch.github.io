@@ -72,6 +72,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 .brand {
   font-family: var(--display); font-size: 1.15rem;
   text-decoration: none; letter-spacing: .01em;
+  white-space: nowrap; flex-shrink: 0;
 }
 .brand span { color: var(--accent); }
 .nav-links { margin-left: auto; display: flex; gap: 22px; align-items: center; }
@@ -79,6 +80,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   font-family: var(--mono); font-size: .72rem; letter-spacing: .12em;
   text-transform: uppercase; color: var(--ink-2); text-decoration: none;
   padding: 6px 0;
+  white-space: nowrap;
 }
 .nav-links a:hover { color: var(--ink); }
 .nav-links a.cta {
@@ -86,6 +88,22 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   padding: 9px 14px; border-radius: 999px;
 }
 .nav-links a.cta:hover { color: var(--ground); filter: brightness(1.08); }
+
+.skip {
+  position: absolute; left: var(--gutter); top: 12px;
+  width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%);
+  background: var(--accent); color: var(--ground);
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .12em;
+  text-transform: uppercase; text-decoration: none;
+  padding: 10px 14px; border-radius: 999px; z-index: 40;
+  white-space: nowrap;
+}
+.skip:focus {
+  width: auto; height: auto;
+  clip: auto; clip-path: none;
+  overflow: visible;
+}
 
 /* ---------- Hero ---------- */
 .hero { padding: clamp(72px, 14vh, 150px) 0 clamp(56px, 9vh, 104px); }
@@ -103,6 +121,7 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   font-size: clamp(1rem, 1.9vw, 1.15rem);
   color: var(--ink-2);
 }
+.hero-actions { margin-top: 28px; }
 .hero-meta {
   margin-top: 40px; padding-top: 22px;
   border-top: 1px solid var(--line);
@@ -143,20 +162,26 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
   text-decoration: none;
   transition: border-color .18s ease, transform .18s ease;
 }
-.card:hover { border-color: var(--line-2); transform: translateY(-3px); }
-.card:hover .card-go { color: var(--accent); }
+@media (hover: hover) {
+  .card:hover { border-color: var(--line-2); transform: translateY(-3px); }
+  .card:hover .card-go { color: var(--accent); }
+  .card:hover .shot img, .card:hover .shot video { transform: scale(1.04); }
+}
 
 /* The shot is a placeholder until a real capture is dropped into media/.
    The <img> removes itself if the file is not there yet, leaving this. */
 .shot {
-  position: relative; aspect-ratio: 16 / 10;
+  position: relative; aspect-ratio: 16 / 10; overflow: hidden;
   background:
     radial-gradient(120% 90% at 20% 0%, #1b1f25 0%, transparent 60%),
     repeating-linear-gradient(135deg, #101318 0 12px, #0e1116 12px 24px);
   border-bottom: 1px solid var(--line);
   display: grid; place-items: center;
 }
-.shot img, .shot video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.shot img, .shot video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: transform .55s cubic-bezier(.22, 1, .36, 1);
+}
 .shot::after {
   content: attr(data-placeholder);
   font-family: var(--mono); font-size: .66rem; letter-spacing: .14em;
@@ -186,7 +211,9 @@ h1, h2, h3 { font-family: var(--display); font-weight: 400; margin: 0; text-wrap
 /* A card can span the full row when the project deserves the space. */
 .card-wide { grid-column: 1 / -1; }
 .card-wide .shot { aspect-ratio: 21 / 9; }
+.card-wide .shot img { object-position: center 38%; }
 .card-wide h3 { font-size: 2rem; }
+.card-wide .card-body { padding: 28px 32px 32px; }
 
 /* ---------- Capabilities ---------- */
 .caps {
@@ -266,7 +293,7 @@ p code, li code {
 .next h3 { font-size: 1.5rem; margin-top: 4px; }
 .next .arrow { font-family: var(--mono); color: var(--accent); font-size: 1.2rem; }
 
-.contact-line { font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3.2rem); letter-spacing: -.01em; }
+.contact-line { font-family: var(--display); font-size: clamp(1.8rem, 5vw, 3.2rem); letter-spacing: -.01em; margin: 16px 0 0; }
 .contact-line a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--line-2); }
 .contact-line a:hover { border-color: var(--accent); }
 
@@ -289,12 +316,16 @@ p code, li code {
   .card-wide h3 { font-size: 1.55rem; }
 }
 @media (max-width: 560px) {
-  .nav-links { gap: 14px; }
+  .nav-inner { gap: 12px; min-height: 56px; }
+  .brand { font-size: 1.02rem; }
+  .nav-links { gap: 12px; }
   .nav-links a { font-size: .66rem; }
   .nav-links a.cta { padding: 8px 12px; }
+  .nav-ext { display: none; }
   .hero h1 { max-width: none; }
   .section-head { flex-wrap: wrap; gap: 8px; }
   .section-head .count { margin-left: 0; flex: 1 0 100%; }
+  .card-wide .card-body { padding: 22px 24px 26px; }
 }
 
 /* Live markers. A project that is actually running says so, and the case study

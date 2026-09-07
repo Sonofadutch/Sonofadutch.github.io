@@ -5,9 +5,10 @@ the pages:
 
 | File | Used by | Size |
 |---|---|---|
-| `one-more-year.gif` | home card + case study | 1280×800, 16:10 |
-| `pentest-plus.gif` | home card + case study | 1280×800 |
-| `sweepstake.gif` | home card + case study | 1280×800 |
+| `one-more-year.jpg` | home card + case study | 1280×800, 16:10 |
+| `aplus-factuur.png` | home card + case study | still of the demo |
+| `concrete-online.jpg` | home card + case study | 1280×800 |
+| `pentest-plus.png` | home card + case study | 1280×800 |
 | `og.png` | link previews (WhatsApp, LinkedIn, email) | 1200×630 |
 
 Until a file exists the page shows a striped placeholder with the filename on it.

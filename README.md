@@ -66,9 +66,9 @@ through Jekyll.
 
 ## Before it goes public — checklist
 
-- [ ] LinkedIn URL in the footer of `index.html`, or delete that line
-- [ ] `media/og.png` exists (this is the image people see when you paste the link)
-- [ ] At least one real capture, not a placeholder
+- [x] LinkedIn URL in the footer of `index.html`, or delete that line
+- [x] `media/og.png` exists (this is the image people see when you paste the link)
+- [x] At least one real capture, not a placeholder
 - [ ] Every claim on the site is true and every number is one you can back up
 - [ ] No client name used without their say-so
 - [ ] No live security issue described in enough detail to be followed

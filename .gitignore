@@ -5,3 +5,5 @@ desktop.ini
 *.psd
 *.kra
 media/*.raw
+.qa/
+.playwright-mcp/
