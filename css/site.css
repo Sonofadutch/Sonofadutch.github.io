@@ -106,8 +106,8 @@ a { color: inherit; }
   background: var(--night);
 }
 .cover-shot img {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
+  position: absolute; left: 0; right: 0; top: -72px;
+  width: 100%; height: calc(100% + 72px);
   object-fit: cover; object-position: center 40%;
   transition: transform 1.1s cubic-bezier(.22, 1, .36, 1);
 }
@@ -122,17 +122,9 @@ a { color: inherit; }
   color: var(--ink);
 }
 .cover-bar .kicker {
+  flex: 1;
   font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
   color: var(--live);
-}
-.cover-name {
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 1.45rem;
-  letter-spacing: .02em;
-  text-transform: uppercase;
-  margin: 0;
-  flex: 1;
 }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px;
@@ -405,6 +397,5 @@ p code, li code {
   .nav-links { gap: 14px; }
   .cover-shot img { object-position: 80% 42%; }
   .cover-bar { gap: 6px 16px; }
-  .cover-name { flex: 1 0 auto; font-size: 1.2rem; }
   .cover-go, .cover-live { margin-left: 0; }
 }
