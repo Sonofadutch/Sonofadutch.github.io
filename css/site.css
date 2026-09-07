@@ -102,63 +102,44 @@ a { color: inherit; }
   text-decoration: none; color: inherit;
 }
 .cover-hit img {
-  position: absolute; left: 0; right: 0; top: -10%;
-  width: 100%; height: 120%;
-  object-fit: cover; object-position: center 42%;
+  position: absolute; left: 0; right: 0; top: -48px;
+  width: 100%; height: calc(100% - 52px + 48px);
+  object-fit: cover; object-position: center 40%;
   transition: transform 1.1s cubic-bezier(.22, 1, .36, 1);
 }
 @media (hover: hover) {
   .cover-hit:hover img { transform: scale(1.03); }
 }
-.cover-scrim {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(7,20,12,.08) 0%, rgba(7,20,12,.2) 45%, rgba(7,20,12,.88) 100%);
-  pointer-events: none;
+.cover-bar {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: baseline; gap: 18px 28px;
+  flex-wrap: wrap;
+  padding: 14px var(--gutter);
+  background: var(--paper);
+  color: var(--ink);
+  border-top: 1px solid var(--ink);
 }
-.cover-copy {
-  position: absolute; left: var(--gutter); right: var(--gutter); bottom: 0;
-  max-width: var(--measure); margin: 0 auto;
-  padding: 0 0 clamp(28px, 5vh, 56px);
+.cover-bar .kicker {
+  margin: 0;
+  font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--live);
 }
-.cover-copy .kicker {
-  margin: 0 0 10px;
-  font-size: .8rem; letter-spacing: .16em; text-transform: uppercase;
-  color: var(--flood);
-}
-.cover-copy h1 {
+.cover-bar h1 {
   font-family: var(--display);
   font-weight: 800;
-  font-size: clamp(3.4rem, 11vw, 7.2rem);
-  line-height: .82;
-  letter-spacing: -.03em;
+  font-size: 1.45rem;
+  letter-spacing: .02em;
   text-transform: uppercase;
   margin: 0;
-  max-width: 12ch;
-}
-.cover-copy .standfirst {
-  margin: 8px 0 0;
-  max-width: 28ch;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  line-height: .95;
-  letter-spacing: -.02em;
-  text-transform: uppercase;
-  color: var(--paper);
+  flex: 1;
 }
 .cover-go {
-  display: inline-block;
-  margin-top: 22px;
-  border: 1px solid var(--flood);
-  color: var(--flood);
-  padding: 10px 16px;
-  font-size: .82rem;
-  letter-spacing: .08em;
-  text-transform: uppercase;
+  margin-left: auto;
+  font-size: .82rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink);
 }
 @media (hover: hover) {
-  .cover-hit:hover .cover-go { background: var(--flood); color: var(--night); }
+  .cover-hit:hover .cover-go { color: var(--live); }
 }
 
 /* ---------- Mast / intro after the cover ---------- */
@@ -421,6 +402,8 @@ p code, li code {
 @media (max-width: 560px) {
   .nav-ext { display: none; }
   .nav-links { gap: 14px; }
-  .cover-hit img { top: 0; height: 100%; object-position: center 78%; }
-  .cover-copy .standfirst { font-size: 1.85rem; max-width: none; }
+  .cover-hit img { object-position: 80% 42%; }
+  .cover-bar { gap: 6px 16px; }
+  .cover-bar h1 { flex: 1 0 auto; font-size: 1.2rem; }
+  .cover-go { margin-left: 0; }
 }
