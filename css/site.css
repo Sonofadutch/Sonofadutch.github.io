@@ -181,7 +181,7 @@ a { color: inherit; }
 .plate-shot img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover; object-position: top center;
+  object-fit: cover; object-position: center center;
   transition: transform .7s cubic-bezier(.22, 1, .36, 1);
 }
 @media (hover: hover) {

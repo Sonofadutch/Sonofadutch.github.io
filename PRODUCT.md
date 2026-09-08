@@ -22,7 +22,7 @@ Each project answers, in order: the problem, the decision, a piece of real code,
 
 ## Operating Context
 
-Static HTML and CSS on GitHub Pages. No build step. Case studies live under `work/`. Four projects on the home page: One More Year (live pool), Weekly invoice (live invoice demo), Concrete Online (in build), PenTest+ Trainer (live PWA).
+Static HTML and CSS on GitHub Pages. No build step. Case studies live under `work/`. Four projects on the home page: One More Year (live pool), Vermeer Invoice (live invoice demo), Concrete Online (in build), PenTest+ Trainer (live PWA).
 
 ## Capabilities and Constraints
 
